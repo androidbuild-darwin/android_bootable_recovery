@@ -136,7 +136,11 @@ std::unique_ptr<Package> Package::CreateFilePackage(
     return nullptr;
   }
 
+#if defined(__APPLE__)
+  off64_t file_size = lseek(fd.get(), 0, SEEK_END);
+#else
   off64_t file_size = lseek64(fd.get(), 0, SEEK_END);
+#endif
   if (file_size == -1) {
     PLOG(ERROR) << "Failed to get the package size";
     return nullptr;
